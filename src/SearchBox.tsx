@@ -19,7 +19,7 @@ export const SearchBox = () => {
       }, [searchTerm])
     
     return (
-        <div className="max-w-xl w-full">
+        <div className="w-full sm:max-w-xl">
             <label htmlFor="search" className="block text-lg font-medium leading-6 text-gray-900">
                 Search User
             </label>

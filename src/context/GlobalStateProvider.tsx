@@ -6,6 +6,8 @@ import { IGlobalState } from "../types";
 type TGlobalStateContext = {
   globalState: IGlobalState;
   setGlobalState: Dispatch<SetStateAction<IGlobalState>>;
+  showDialog: (node: ReactNode) => void
+  closeDialog: () => void
 }
 
 const GlobalStateContext = createContext<TGlobalStateContext>(null!);
@@ -15,13 +17,29 @@ export const GlobalStateProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [globalState, setGlobalState] = useState<IGlobalState>({ isOpen: false });
+  const [globalState, setGlobalState] = useState<IGlobalState>({ isOpen: false, dialogContent: null });
+
+  const showDialog = (node: ReactNode) => {
+    setGlobalState({
+      ...globalState,
+      dialogContent: node
+    })
+  };
+
+  const closeDialog = () => {
+    setGlobalState({
+      ...globalState,
+      dialogContent: null
+    })
+  };
 
   return (
     <GlobalStateContext.Provider
       value={{
         globalState,
         setGlobalState,
+        showDialog,
+        closeDialog
       }}
     >
       {children}

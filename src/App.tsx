@@ -1,16 +1,21 @@
 import './App.css'
+import { GlobalStateProvider } from './context/GlobalStateProvider'
 import { UserListProvider } from './context/UserListProvider'
+import { ConfirmationDialog } from './Dialog'
 import { SearchBox } from './SearchBox'
 import UserList from './UserList'
 
 function App() {
   return (
-    <div className='mx-auto w-full p-4'>
+    <div className='w-full p-4'>
       <UserListProvider>
-        <SearchBox />
-        <div className='mt-10'>
-           <UserList />
-        </div>
+        <GlobalStateProvider>
+          <ConfirmationDialog />
+          <SearchBox />
+          <div className='mt-10'>
+            <UserList />
+          </div>
+        </GlobalStateProvider>
       </UserListProvider>
     </div>
   )
