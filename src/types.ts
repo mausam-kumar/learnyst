@@ -13,3 +13,7 @@ export type TUser = {
     country: string
     description: string
 }
+
+export type IGlobalState = {
+    isOpen: boolean
+}
