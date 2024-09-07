@@ -1,5 +1,5 @@
 import {
-    createContext, ReactNode, useContext, useRef, useState,
+    createContext, Dispatch, ReactNode, useContext, useRef, useState,
 } from "react";
 import { TUser } from "../types";
 import celebrities from "../celebrities.json";
@@ -7,7 +7,9 @@ import celebrities from "../celebrities.json";
 type UserListState = {
     userList: TUser[];
     updateUserList: ({ id, payload }:{ id: number, payload: Omit<TUser, 'id'>}) => void;
-    removeUserById: (id: number) => void
+    removeUserById: (id: number) => void,
+    filteredUser: TUser[]
+    setQuery: Dispatch<React.SetStateAction<string>>
 }
 
 const UserListContext = createContext<UserListState>(null!);
@@ -18,6 +20,7 @@ export const UserListProvider = ({
     children: ReactNode;
 }) => {
     const celebList = useRef<TUser[]>(celebrities as TUser[])
+    const [query, setQuery] = useState("");
     const [userList, setUserList] = useState<TUser[]>(celebList.current);
     
     const updateUserList = ({ id, payload }:{ id: number, payload: Omit<TUser, 'id'>}) => {
@@ -33,12 +36,21 @@ export const UserListProvider = ({
         setUserList(updatedList)
     }
 
+    const filteredUser =
+    query === ''
+      ? userList
+      : userList.filter((user) => {
+          return (user.first + user.last).toLowerCase().includes(query.toLowerCase())
+        })
+
     return (
         <UserListContext.Provider
             value={{
                 userList,
                 updateUserList,
-                removeUserById
+                removeUserById,
+                filteredUser,
+                setQuery
             }}
         >
             {children}
