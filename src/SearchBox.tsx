@@ -27,6 +27,7 @@ export const SearchBox = () => {
                 <input
                     id="search"
                     name="search"
+                    placeholder="Search for user"
                     type="text"
                     value={searchTerm}
                     onChange={(e) => handleValueChange(e)}

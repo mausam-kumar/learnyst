@@ -7,16 +7,16 @@ const InputForm = ({
     placeholder
 }: {
     name: string;
-    title: string
+    title?: string
     placeholder: string
 }) => {
     const { field, fieldState } = useController({ name });
 
     return (
         <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            {!!title && <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 {title}
-            </label>
+            </label>}
             <div className="mt-2">
                 <input
                     {...field}

@@ -8,16 +8,16 @@ const TextArea = ({
 }: {
     name: string;
     placeholder?: string;
-    title: string
+    title?: string
 }) => {
     const { field, fieldState } = useController({ name });
 
     return (
         <>
             <div>
-                <label className="block text-sm font-medium leading-6 text-gray-900">
+                {!!title && <label className="block text-sm font-medium leading-6 text-gray-900">
                     {title}
-                </label>
+                </label>}
                 <div className="mt-2">
                     <textarea
                         rows={5}
