@@ -7,6 +7,8 @@ import InputForm from "./forms/InputForm"
 import { SelectMenu } from "./forms/SelectMenu"
 import { availableGender } from "./constant"
 import TextArea from "./forms/TextArea"
+import { useUserListContext } from "./context/UserListProvider"
+import { Gender } from "./types"
 
 type UserCardProps = {
     name: string
@@ -20,6 +22,9 @@ type UserCardProps = {
     handleDelete: () => void
     handleEdit: () => void
     mode: "VIEW" | "EDIT"
+    id: number
+    email: string
+    editCardId: number | null
 }
 
 type FormData = {
@@ -30,7 +35,7 @@ type FormData = {
     description: string
 }
 
-const UserCard: FC<UserCardProps> = ({ imageURL, mode, name, dob, description, gender, country, handleEdit, handleDelete, isActive, handleExpand }) => {
+const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, name, dob, description, gender, country, handleEdit, handleDelete, isActive, handleExpand }) => {
     const methods = useForm({
         defaultValues: {
             name,
@@ -42,21 +47,39 @@ const UserCard: FC<UserCardProps> = ({ imageURL, mode, name, dob, description, g
         resolver: yupResolver(userFormSchema),
         mode: "onSubmit",
     });
-    const { handleSubmit } = methods;
-
+    const { handleSubmit, formState: { isDirty }, reset } = methods;
+    const { updateUserList } = useUserListContext()
     const [height, setHeight] = useState(0);
 
     const handleFormSubmit = (data: FormData) => {
-        console.log(data)
+        const { name, description, dob, gender, country } = data || {}
+        const [first, last ] = name.split(" ")
+        const payload = {
+            first,
+            last,
+            description,
+            dob,
+            gender: gender as Gender,
+            country,
+            picture: imageURL,
+            email
+        }
+        updateUserList({ id, payload })
+        handleEdit()
+    }
+
+    const handleDiscard = () => {
+        reset({ name, gender, country, dob, description })
+        handleEdit()
     }
 
     useEffect(() => {
         if (isActive) {
-            setHeight(280);
+            setHeight(mode === "EDIT" ? 320 : 280);
         } else {
             setHeight(0);
         }
-    }, [isActive]);
+    }, [isActive, mode]);
 
     return <FormProvider {...methods} >
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-full">
@@ -70,7 +93,7 @@ const UserCard: FC<UserCardProps> = ({ imageURL, mode, name, dob, description, g
                             </div> : <p>{name}</p>
                         }
                     </div>
-                    <button onClick={handleExpand} className={`h-6 w-6 flex justify-center items-center rounded-full border mt-4 ${isActive ? "transform rotate-180" : ""}`}>
+                    <button disabled={mode === "EDIT" || !!editCardId} onClick={handleExpand} className={`h-6 w-6 flex justify-center items-center rounded-full disabled:bg-gray-300 border mt-4 ${isActive ? "transform rotate-180" : ""}`}>
                         <ChevronDown />
                     </button>
                 </div>
@@ -104,7 +127,7 @@ const UserCard: FC<UserCardProps> = ({ imageURL, mode, name, dob, description, g
                                 {description}
                             </p>
                         }
-                        <div className="flex justify-end gap-x-4">
+                        {mode === "VIEW" ? <div className="flex justify-end gap-x-4">
                             <button
                                 type="button"
                                 onClick={handleDelete}
@@ -119,7 +142,22 @@ const UserCard: FC<UserCardProps> = ({ imageURL, mode, name, dob, description, g
                             >
                                 Edit
                             </button>
-                        </div>
+                        </div> : <div className="flex justify-end gap-x-4">
+                            <button
+                                type="submit"
+                                disabled={!isDirty}
+                                className={`rounded-md bg-red-100 px-2.5 py-1.5 disabled:bg-gray-300 disabled:text-gray-800 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-200`}
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                onClick={handleDiscard}
+                                type="button"
+                                className="rounded-md bg-indigo-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                            >
+                                Discard
+                            </button>
+                        </div>}
                     </div>
                 </div>
             </div>

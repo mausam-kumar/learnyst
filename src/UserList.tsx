@@ -16,20 +16,27 @@ const UserList = () => {
     };
 
     const handleEdit = (id: number) => {
-        setEditCardId(id)
+        if (editCardId === id) {
+            setEditCardId(null)
+        } else {
+            setEditCardId(id)
+        }
     }
 
     return <div className="space-y-10 w-full">
         {
             filteredUser.map((user) => {
-                const { first, last, description, picture, dob, country, gender, id } = user
+                const { first, last, email, description, picture, dob, country, gender, id } = user
                 return <UserCard
                     name={`${first} ${last}`}
                     dob={dob}
                     gender={gender}
                     description={description}
                     key={id}
+                    id={id}
+                    email={email}
                     country={country}
+                    editCardId={editCardId}
                     imageURL={picture}
                     isActive={activeCard === id}
                     handleExpand={() => setActiveCard((val) => val === id ? null : id)}
