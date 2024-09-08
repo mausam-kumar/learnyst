@@ -7,14 +7,17 @@ import { Confirmation } from "./Confirmation"
 const UserList = () => {
     const { showDialog } = useGlobalStateContext()
     const { filteredUser, removeUserById } = useUserListContext()
+
     const [activeCard, setActiveCard] = useState<number | null>()
-    const handleExpand = (id: number) => {
-        setActiveCard((val) => val ? null : id)
-    }
+    const [editCardId, setEditCardId] = useState<number | null>(null)
 
     const handleDelete = (id: number) => {
         showDialog(<div className="w-full"><Confirmation handleConfirm={() => removeUserById(id)} /></div>)
     };
+
+    const handleEdit = (id: number) => {
+        setEditCardId(id)
+    }
 
     return <div className="space-y-10 w-full">
         {
@@ -29,8 +32,10 @@ const UserList = () => {
                     country={country}
                     imageURL={picture}
                     isActive={activeCard === id}
-                    handleExpand={() => handleExpand(id)}
+                    handleExpand={() => setActiveCard((val) => val === id ? null : id)}
                     handleDelete={() => handleDelete(id)}
+                    handleEdit={() => handleEdit(id)}
+                    mode={editCardId === id ? "EDIT" : "VIEW"}
                 />
             })
         }

@@ -2,7 +2,6 @@ import { useController } from "react-hook-form";
 import { FormInputComponentErrors } from "./FormComponentError";
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { SelectMenuOption } from "../types";
 
 export const SelectMenu = ({
   name,
@@ -10,7 +9,7 @@ export const SelectMenu = ({
   title
 }: {
   name: string;
-  options: SelectMenuOption[];
+  options: string[];
   title?: string
 }) => {
   
@@ -20,11 +19,11 @@ export const SelectMenu = ({
   } = useController({ name });
 
   return (
-    <Listbox value={selected} onChange={handleValueChange}>
+    <Listbox value={selected} defaultValue={options[0]} as="div" onChange={handleValueChange}>
       {!!title && <Label className="block text-sm font-medium leading-6 text-gray-900">{title}</Label>}
       <div className="relative mt-2">
         <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <span className="block truncate">{selected?.name || "Choose input type"}</span>
+          <span className="block truncate">{selected || options[0]}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronUpDownIcon aria-hidden="true" className="h-5 w-5 text-gray-400" />
           </span>
@@ -36,11 +35,12 @@ export const SelectMenu = ({
         >
           {options.map((option) => (
             <ListboxOption
-              key={option.id}
+              key={option}
               value={option}
+              defaultValue={options[0]}
               className="group relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-indigo-600 data-[focus]:text-white"
             >
-              <span className="block truncate font-normal group-data-[selected]:font-semibold">{option.name}</span>
+              <span className="block truncate font-normal group-data-[selected]:font-semibold">{option}</span>
 
               <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-data-[focus]:text-white [.group:not([data-selected])_&]:hidden">
                 <CheckIcon aria-hidden="true" className="h-5 w-5" />

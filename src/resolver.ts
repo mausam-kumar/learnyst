@@ -8,5 +8,5 @@ export const userFormSchema = Yup.object({
     gender: Yup.string()
         .required("Required"),
     country: Yup.string().required("Required"),
-    description: Yup.string().min(10, "Description is too short").max(255).required("Description is required"),
+    description: Yup.string().min(10, "Description is too short").required("Description is required"),
 });
