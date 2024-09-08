@@ -21,6 +21,7 @@ type UserCardProps = {
     handleExpand: () => void
     handleDelete: () => void
     handleEdit: () => void
+    resetEditState: () => void
     mode: "VIEW" | "EDIT"
     id: number
     email: string
@@ -35,7 +36,22 @@ type FormData = {
     description: string
 }
 
-const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, name, dob, description, gender, country, handleEdit, handleDelete, isActive, handleExpand }) => {
+const calculateAge = (dobString: string) => {
+    const dob = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDifference = today.getMonth() - dob.getMonth();
+    const dayDifference = today.getDate() - dob.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+    }
+    return age;
+}
+
+const minAgeRequiredToEdit = 18
+
+const UserCard: FC<UserCardProps> = ({ id, resetEditState, editCardId, email, imageURL, mode, name, dob, description, gender, country, handleEdit, handleDelete, isActive, handleExpand }) => {
     const methods = useForm({
         defaultValues: {
             name,
@@ -53,7 +69,7 @@ const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, nam
 
     const handleFormSubmit = (data: FormData) => {
         const { name, description, dob, gender, country } = data || {}
-        const [first, last ] = name.split(" ")
+        const [first, last] = name.split(" ")
         const payload = {
             first,
             last,
@@ -65,12 +81,12 @@ const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, nam
             email
         }
         updateUserList({ id, payload })
-        handleEdit()
+        resetEditState()
     }
 
     const handleDiscard = () => {
         reset({ name, gender, country, dob, description })
-        handleEdit()
+        resetEditState()
     }
 
     useEffect(() => {
@@ -105,7 +121,7 @@ const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, nam
                                 {
                                     mode === "EDIT" ? <div>
                                         <InputForm name="dob" placeholder="Dob" />
-                                    </div> : <p>{dob}</p>
+                                    </div> : <p>{`${calculateAge(dob)} years`}</p>
                                 }
                             </div>
                             <div className="flex flex-col">
@@ -138,7 +154,8 @@ const UserCard: FC<UserCardProps> = ({id, editCardId, email, imageURL, mode, nam
                             <button
                                 onClick={handleEdit}
                                 type="button"
-                                className="rounded-md bg-indigo-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                                disabled={calculateAge(dob) < minAgeRequiredToEdit}
+                                className="rounded-md bg-indigo-50 px-2.5 py-1.5 disabled:bg-gray-300 disabled:text-gray-800 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                             >
                                 Edit
                             </button>

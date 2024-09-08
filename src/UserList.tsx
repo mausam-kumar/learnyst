@@ -15,12 +15,20 @@ const UserList = () => {
         showDialog(<div className="w-full"><Confirmation handleConfirm={() => removeUserById(id)} /></div>)
     };
 
+    const resetEditState = () => {
+        setEditCardId(null)
+    }
+
     const handleEdit = (id: number) => {
         if (editCardId === id) {
             setEditCardId(null)
         } else {
             setEditCardId(id)
         }
+    }
+
+    const handleExpand = (id: number) => {
+        setActiveCard((val) => val === id ? null : id)
     }
 
     return <div className="space-y-10 w-full">
@@ -39,9 +47,10 @@ const UserList = () => {
                     editCardId={editCardId}
                     imageURL={picture}
                     isActive={activeCard === id}
-                    handleExpand={() => setActiveCard((val) => val === id ? null : id)}
+                    handleExpand={() => handleExpand(id)}
                     handleDelete={() => handleDelete(id)}
                     handleEdit={() => handleEdit(id)}
+                    resetEditState={resetEditState}
                     mode={editCardId === id ? "EDIT" : "VIEW"}
                 />
             })
