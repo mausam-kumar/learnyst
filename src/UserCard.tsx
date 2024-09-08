@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react"
-import { ChevronDown } from "./icons"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { userFormSchema } from "./resolver"
 import { FormProvider, useForm } from "react-hook-form"
@@ -82,6 +81,7 @@ const UserCard: FC<UserCardProps> = ({ id, resetEditState, editCardId, email, im
         }
         updateUserList({ id, payload })
         resetEditState()
+        reset({ name, gender, country, dob, description })
     }
 
     const handleDiscard = () => {
@@ -109,8 +109,10 @@ const UserCard: FC<UserCardProps> = ({ id, resetEditState, editCardId, email, im
                             </div> : <p>{name}</p>
                         }
                     </div>
-                    <button disabled={mode === "EDIT" || !!editCardId} onClick={handleExpand} className={`h-6 w-6 flex justify-center items-center rounded-full disabled:bg-gray-300 border mt-4 ${isActive ? "transform rotate-180" : ""}`}>
-                        <ChevronDown />
+                    <button disabled={mode === "EDIT" || !!editCardId} onClick={handleExpand} className={`h-10 w-10 text-center rounded-full flex justify-center items-center disabled:bg-gray-300 border mt-4`}>
+                        <span className="text-4xl text-center block">
+                            {isActive ? "-" : "+"}
+                        </span>
                     </button>
                 </div>
                 <div style={{ height }} className="overflow-hidden transform transition-all duration-300">
