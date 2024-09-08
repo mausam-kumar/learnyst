@@ -9,15 +9,14 @@ const UserList = () => {
     const { filteredUser, removeUserById } = useUserListContext()
     const [activeCard, setActiveCard] = useState<number | null>()
     const handleExpand = (id: number) => {
-        setActiveCard(id)
+        setActiveCard((val) => val ? null : id)
     }
 
     const handleDelete = (id: number) => {
-        console.log(id)
         showDialog(<div className="w-full"><Confirmation handleConfirm={() => removeUserById(id)} /></div>)
     };
 
-    return <div className="space-y-10 w-full sm:max-w-xl">
+    return <div className="space-y-10 w-full">
         {
             filteredUser.map((user) => {
                 const { first, last, description, picture, dob, country, gender, id } = user

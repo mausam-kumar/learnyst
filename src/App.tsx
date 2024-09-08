@@ -1,4 +1,3 @@
-import './App.css'
 import { GlobalStateProvider } from './context/GlobalStateProvider'
 import { UserListProvider } from './context/UserListProvider'
 import { ConfirmationDialog } from './Dialog'

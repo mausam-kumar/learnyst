@@ -1,4 +1,5 @@
 import { FC } from "react"
+import Accordion from "./Accordian"
 import { ChevronDown } from "./icons"
 
 type UserCardProps = {
@@ -12,18 +13,21 @@ type UserCardProps = {
     handleExpand: () => void
     handleDelete: () => void
 }
-const UserCard: FC<UserCardProps> = ({ imageURL, name, dob, gender, handleDelete, country, handleExpand, description, isActive }) => {
 
-    return <div className="border rounded shadow p-3 space-y-4">
-        <div id="card-header" className="flex justify-between font-lexend">
-            <div className="flex gap-x-4 items-center justify-center">
-                <img src={imageURL} alt="User image" className="h-16 w-16 object-contain rounded-full" />
-                <p>{name}</p>
-            </div>
-            <button onClick={handleExpand} className={`h-6 w-6 flex justify-center items-center rounded-full border mt-4 ${isActive ? "transform rotate-180" : ""}`}>
-                <ChevronDown />
-            </button>
+const CardHeader = ({ imageURL, name, handleExpand, isActive }: Partial<UserCardProps>) => {
+    return <div id="card-header" className="flex justify-between font-lexend w-full">
+        <div className="flex gap-x-4 items-center justify-center">
+            <img src={imageURL} alt="User image" className="h-16 w-16 object-contain rounded-full" />
+            <p>{name}</p>
         </div>
+        <button onClick={handleExpand} className={`h-6 w-6 flex justify-center items-center rounded-full border mt-4 ${isActive ? "transform rotate-180" : ""}`}>
+            <ChevronDown />
+        </button>
+    </div>
+}
+
+const CardBody = ({ dob, description, gender, country, handleDelete }: Partial<UserCardProps>) => {
+    return <div>
         <div className="flex justify-between">
             <div className="flex flex-col">
                 <p>Age</p>
@@ -38,9 +42,9 @@ const UserCard: FC<UserCardProps> = ({ imageURL, name, dob, gender, handleDelete
                 <p>{country}</p>
             </div>
         </div>
-        <div>
+        <p className="line-clamp-6">
             {description}
-        </div>
+        </p>
         <div className="flex justify-end gap-x-4">
             <button
                 type="button"
@@ -57,6 +61,16 @@ const UserCard: FC<UserCardProps> = ({ imageURL, name, dob, gender, handleDelete
             </button>
         </div>
     </div>
+};
+
+const UserCard: FC<UserCardProps> = ({ imageURL, name, dob, description, gender, country, handleDelete, isActive, handleExpand }) => {
+
+    return <Accordion
+        title={<CardHeader
+            imageURL={imageURL} name={name}
+            isActive={isActive} handleExpand={handleExpand} />}
+        child={<CardBody description={description} dob={dob} gender={gender} country={country} handleDelete={handleDelete} />}
+    />
 };
 
 export default UserCard
