@@ -6,7 +6,7 @@ import UserList from './UserList'
 
 function App() {
   return (
-    <div className='w-full p-4'>
+    <div className='w-full p-4 md:max-w-xl'>
       <UserListProvider>
         <GlobalStateProvider>
           <ConfirmationDialog />
